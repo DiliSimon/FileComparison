@@ -78,7 +78,13 @@ function find_difference($mirrorfoldername, $livefoldername){
             <div class=\"col-2\">$date</div>
             <div class=\"col-4\" style='text-align: right'><button onclick=\"transferDoc("."'$file'".")\" class='btn btn-primary btn-sm'>Transfer</button></div>";
             echo "</div>"; */
-        }elseif (filemtime($filepath)!=filemtime($mirrorfoldername."/".$file)){
+        }elseif (filemtime($filepath)!=filemtime($mirrorpath)){
+            $if_warn = 'N';
+
+            if(filemtime($filepath) > filemtime($mirrorpath)){
+                $if_warn = 'Y';
+            }
+
             try {
                 $date = date("F/d/Y/H:i:s", filemtime($mirrorpath));
             }catch (Exception $e){
@@ -90,11 +96,33 @@ function find_difference($mirrorfoldername, $livefoldername){
                 $size = 'N/A';
             }
             echo "<div class=\"row\">";
-            echo "<div class=\"col-2\" style='margin-bottom: 0.6em'>$file</div>
-            <div class=\"col-2\">UPDATED</div>
+            echo "<div class=\"col-3\" style='margin-bottom: 0.6em'>$file</div>
             <div class=\"col-2\">$size</div>
             <div class=\"col-2\">$date</div>
-            <div class=\"col-4\" style='text-align: right'><button onclick=\"transferDoc("."'$file'".")\" class=\"btn btn-primary btn-sm\">Transfer</button>&emsp;<button onclick=\"displayDoc("."'$file'".")\" class=\"btn btn-primary btn-sm\">Compare</button></div>";
+            <div class=\"col-5\" style='text-align: right'><button onclick=\"transferDoc("."'$file'".",'$if_warn'".")\" class=\"btn btn-primary btn-sm\">Transfer</button>&emsp;<button onclick=\"displayDoc("."'$file'".")\" class=\"btn btn-primary btn-sm\">Compare</button></div>";
+            echo "</div>";
+        }elseif (filemtime($filepath)==filemtime($mirrorpath)){
+            $if_warn = 'N';
+
+            if(filemtime($filepath) > filemtime($mirrorpath)){
+                $if_warn = 'Y';
+            }
+
+            try {
+                $date = date("F/d/Y/H:i:s", filemtime($mirrorpath));
+            }catch (Exception $e){
+                $date = 'N/A';
+            }
+            try {
+                $size = filesize($mirrorpath).' bytes';
+            }catch (Exception $e){
+                $size = 'N/A';
+            }
+            echo "<div class=\"row\">";
+            echo "<div class=\"col-3\" style='margin-bottom: 0.6em'>$file</div>
+            <div class=\"col-2\">$size</div>
+            <div class=\"col-2\">$date</div>
+            <div class=\"col-5\" style='text-align: right'><button onclick=\"transferDoc("."'$file'".",'$if_warn'".")\" class=\"btn btn-primary btn-sm\">Transfer</button>&emsp;<button onclick=\"displayDoc("."'$file'".")\" class=\"btn btn-primary btn-sm\">Compare</button></div>";
             echo "</div>";
         }
     }
@@ -113,11 +141,10 @@ function find_difference($mirrorfoldername, $livefoldername){
         }
 
         echo "<div class=\"row\">";
-        echo "<div class=\"col-2\" style='margin-bottom: 0.6em'>$file&emsp;</div>
-        <div class=\"col-2\">NEW</div>
+        echo "<div class=\"col-3\" style='margin-bottom: 0.6em'>$file&emsp;</div>
         <div class=\"col-2\">$size</div>
         <div class=\"col-2\">$date</div>
-        <div class=\"col-4\" style='text-align: right'><button onclick=\"transferDoc("."'$file'".")\" class='btn btn-primary btn-sm'>Transfer</button></div>";
+        <div class=\"col-5\" style='text-align: right'><button onclick=\"transferDoc("."'$file'".")\" class='btn btn-primary btn-sm'>Transfer</button>&emsp;<button style='visibility: hidden' onclick=\"displayDoc("."'$file'".")\" class=\"btn btn-primary btn-sm\">Compare</button></div>";
         echo "</div>";
     }
 }
@@ -152,8 +179,15 @@ function find_difference($mirrorfoldername, $livefoldername){
 <div id="table"></div>
 
 <script type="text/javascript">
-    function transferDoc(file) {
+    function transferDoc(file,if_warn) {
+            if(if_warn == 'Y'){
+                var r = confirm("Press a button!");
+                if(!r){
+                    return;
+                }
+            }
             var mirror_path = "./New/"+file, live_path = "./Old/"+file, backup_path = "./backup/"+file;
+
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
