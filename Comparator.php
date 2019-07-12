@@ -23,10 +23,11 @@ function print_files($mirrorfoldername){
                     $filepath = $mirrorfoldername."/".$file;
                     $date = date("F/d/Y/H:i:s", filemtime($filepath));
                     $size = filesize($filepath).' bytes';
-                    echo "<div class='row' style='padding-bottom: 0.5em'>";
-                    echo "<div class='col-4'>$file</div>
+                    echo "<div class='row'>";
+                    echo "<div class='col-3' style='margin-bottom: 0.6em'>$file</div>
                     <div class='col-2'>$size</div>
-                    <div class='col-3' style='text-align: left'>$date</div>";
+                    <div class='col-2' style='text-align: left'>$date</div>
+                    <div class=\"col - 5\" style='text-align: right'><button style='visibility: hidden' onclick=\"transferDoc("."'$file'".")\" class='btn btn-primary btn-sm' > Transfer</button >&emsp;<button style = 'visibility: hidden' onclick = \"displayDoc("."'$file'".")\" class=\"btn btn-primary btn-sm\" > Compare</button ></div >";
                     echo '</div>';
                     array_push($mirror_list, $file);
                 }
@@ -96,7 +97,7 @@ function find_difference($mirrorfoldername, $livefoldername){
                 $size = 'N/A';
             }
             echo "<div class=\"row\">";
-            echo "<div class=\"col-3\" style='margin-bottom: 0.6em'>$file</div>
+            echo "<div class=\"col-3\" style='margin-bottom: 0.6em; font-weight: bold'>$file</div>
             <div class=\"col-2\">$size</div>
             <div class=\"col-2\">$date</div>
             <div class=\"col-5\" style='text-align: right'><button onclick=\"transferDoc("."'$file'".",'$if_warn'".")\" class=\"btn btn-primary btn-sm\">Transfer</button>&emsp;<button onclick=\"displayDoc("."'$file'".")\" class=\"btn btn-primary btn-sm\">Compare</button></div>";
@@ -119,7 +120,7 @@ function find_difference($mirrorfoldername, $livefoldername){
                 $size = 'N/A';
             }
             echo "<div class=\"row\">";
-            echo "<div class=\"col-3\" style='margin-bottom: 0.6em'>$file</div>
+            echo "<div class=\"col-3\" style='margin-bottom: 0.6em; font-weight: bold'>$file</div>
             <div class=\"col-2\">$size</div>
             <div class=\"col-2\">$date</div>
             <div class=\"col-5\" style='text-align: right'><button onclick=\"transferDoc("."'$file'".",'$if_warn'".")\" class=\"btn btn-primary btn-sm\">Transfer</button>&emsp;<button onclick=\"displayDoc("."'$file'".")\" class=\"btn btn-primary btn-sm\">Compare</button></div>";
@@ -141,7 +142,7 @@ function find_difference($mirrorfoldername, $livefoldername){
         }
 
         echo "<div class=\"row\">";
-        echo "<div class=\"col-3\" style='margin-bottom: 0.6em'>$file&emsp;</div>
+        echo "<div class=\"col-3\" style='margin-bottom: 0.6em'>$file</div>
         <div class=\"col-2\">$size</div>
         <div class=\"col-2\">$date</div>
         <div class=\"col-5\" style='text-align: right'><button onclick=\"transferDoc("."'$file'".")\" class='btn btn-primary btn-sm'>Transfer</button>&emsp;<button style='visibility: hidden' onclick=\"displayDoc("."'$file'".")\" class=\"btn btn-primary btn-sm\">Compare</button></div>";
@@ -181,7 +182,7 @@ function find_difference($mirrorfoldername, $livefoldername){
 <script type="text/javascript">
     function transferDoc(file,if_warn) {
             if(if_warn == 'Y'){
-                var r = confirm("Press a button!");
+                var r = confirm("Live file is newer. Confirm to overwrite.");
                 if(!r){
                     return;
                 }
